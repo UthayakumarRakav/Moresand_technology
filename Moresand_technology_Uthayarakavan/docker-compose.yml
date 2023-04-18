@@ -1,0 +1,19 @@
+version: '3'
+services:
+  db:
+    build: ./database
+    restart: always
+  web:
+    build: ./web-server
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      - db
+  app:
+    build: ./hello-world
+    restart: always
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
