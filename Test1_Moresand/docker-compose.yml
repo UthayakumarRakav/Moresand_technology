@@ -1,0 +1,19 @@
+version: '3'
+services:
+  app:
+    build: /home/rakav/Test1_Moresand/hello-world
+    ports:
+      - "8080:80"
+  web:
+    build: /home/rakav/Test1_Moresand/web-server
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+  db:
+    build: /home/rakav/Test1_Moresand/database
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+
