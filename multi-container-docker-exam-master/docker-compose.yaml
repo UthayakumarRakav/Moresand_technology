@@ -1,0 +1,43 @@
+version: "3.3"
+
+services:
+  # DB which hold the greeting. 
+  postgres:
+    build: ./postgresdb/.
+    image: mypostgres:v1
+    container_name: mypostgresc
+    restart: always
+    environment:
+      POSTGRES_USER: appusr
+      POSTGRES_PASSWORD: pgpw#345 
+      POSTGRES_DB: hellodb
+      PGDATA:  /var/lib/postgresql/data/pgdata
+    volumes:
+      - PGDATA:  /var/lib/postgresql/data/pgdata
+volumes:
+  PGDATA:    
+  
+  # python rest service which retrive and return 'hello world' message from the postgre database
+  helloapp:
+    build: ./helloapp/.
+    image: helloapp:v1
+    container_name: helloappc
+    restart: always
+    ports:
+       - "5000:5000" 
+    environment:
+      DATABASE_URL: postgresql://appusr:pgpw#345@postgres:5432/hellodb 
+    command: "python app.py"
+    depends_on: 
+      - postgres  
+  # implement nginx server using as a reverse proxy in here
+  
+  nginx:
+    build: ./nginx/.
+    image: mynginx:v1
+    container_name: mynginxc
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - helloapp   
